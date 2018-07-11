@@ -75,3 +75,7 @@ ListPicker{
     margin-top:0px;
     text-align: center;
 }
+.articlesList{
+    height:1000px;
+    background:red;
+}

@@ -2,13 +2,15 @@
  var okHttp = require("nativescript-okhttp");
 
  var Moments= require("moment");
+ var nstoasts = require("nativescript-toasts");
+//for toasts
  
 const articleReader= require("./articleReader");
 
 const main= {
   data() {
     return {
-    appName:'The News Research Apps',
+    appName:'News Research Apps',
       source:'bbc-news',
       tag:'topHeadlines',
       tagFilerrs:[
@@ -35,7 +37,7 @@ const main= {
          //calls method to load news articles
     },
     openNews(url){
-        this.$navigateTo(articleReader,{ context: { propsData: { url:url}}});
+        this.$showModal(articleReader,{ context: { propsData: { url:url}}});
 
      },
      openSourceDialog(){
@@ -90,6 +92,16 @@ const main= {
         this.loadNewsArticles(home.source,finalTag);
         //send command to load the damn news
         home.tag=finalTag;
+    },
+    refreshNews(){
+        //method refreshes news
+        this.loadNewsArticles(this.source,this.tag);
+        var options = {
+            text: "Refreshed",
+            duration : nstoasts.DURATION.SHORT,
+            position : nstoasts.POSITION.BOTTOM //optional
+        }
+        nstoasts.show(options);
     },
     loadNewsArticles(source,tag){
         console.log("loading news artice");
@@ -162,8 +174,13 @@ const main= {
     <Page class="page">
        
     <ActionBar flat="true" title="The News Research App">
-        <ActionItem @tap="openSourceDialog" text="source"></ActionItem>
-   </ActionBar>
+    
+     <NavigationButton android.systemIcon="ic_menu_add"  />
+ 
+    <ActionItem @tap="openSourceDialog" text="sources"></ActionItem>
+
+    <ActionItem @tap="refreshNews" android.systemIcon="ic_menu_refresh"></ActionItem>
+    </ActionBar>
    <ScrollView>
 
   
@@ -177,7 +194,7 @@ const main= {
       <SegmentedBarItem title="Politics" />
     </SegmentedBar>
     
-
+ 
          <StackLayout @tap="openNews(n.url)"  v-for="n in articles" class="newsItem">
             
             <StackLayout class="newsItemImage">
@@ -195,6 +212,7 @@ const main= {
 
 
         </StackLayout>
+ 
 
  
       </StackLayout>
