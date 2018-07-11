@@ -1,0 +1,77 @@
+@import 'nativescript-theme-core/css/core.light.css';
+
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+.page{
+    font-family: 'Roboto', sans-serif;
+
+}
+
+
+ActionBar{
+    background:white;
+    color:black;
+}
+
+/*css for login.js*/
+.login_text{
+text-align: center;
+font-size: 20px;
+font-weight: bold;
+}
+
+.tab_guest{
+    background:white;
+    height:100;
+    color:red; 
+}
+ 
+ 
+
+.white{
+    color:white;
+}
+.Style{
+    color:white;
+}
+
+ListPicker{
+ 
+     padding:20;
+    height:100;
+}
+.pickSourceText{
+    text-align:center;
+    font-weight: bold;
+    font-family: 'Roboto', sans-serif;
+
+}
+.newsItem{
+    min-height:800px;
+  }
+
+  .newsItem:active{
+      background:black;
+  }
+
+.newsItemImage{
+    height:500px;
+ }
+.newsItemTitle{
+    background:white;
+    font-size:20px;
+    font-weight: bold;
+    padding:10px;
+    margin-left: 70px;
+}
+.metric{
+    text-align: center;
+    width: 50%;
+    padding: 10px;
+}
+
+.sourceTagFilters{
+    margin:50px;
+    margin-top:0px;
+    text-align: center;
+}
