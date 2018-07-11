@@ -34,8 +34,8 @@ const main= {
          this.loadNewsArticles(source,"topHeadlines");
          //calls method to load news articles
     },
-    openNews(){
-        this.$navigateTo(articleReader);
+    openNews(url){
+        this.$navigateTo(articleReader,{ context: { propsData: { url:url}}});
 
      },
      openSourceDialog(){
@@ -107,6 +107,12 @@ const main= {
             //parse data related to top headline  
             apiReqLink="https://newsapi.org/v2/top-headlines?apiKey=df7b47e4a44a4ba0906e82f0e4c2b6bc&sources="+source;
             break;
+            case "Bitcoin":
+            apiReqLink="https://newsapi.org/v2/everything?q=bitcoin&apiKey=df7b47e4a44a4ba0906e82f0e4c2b6bc&sources="+source;
+            break;
+            case "Politics":
+            apiReqLink="https://newsapi.org/v2/everything?q=politics&from=2018-07-11&apiKey=df7b47e4a44a4ba0906e82f0e4c2b6bc&sources="+source;
+            break;
         }
 
         
@@ -172,7 +178,7 @@ const main= {
     </SegmentedBar>
     
 
-         <StackLayout @tap="openNews"  v-for="n in articles" class="newsItem">
+         <StackLayout @tap="openNews(n.url)"  v-for="n in articles" class="newsItem">
             
             <StackLayout class="newsItemImage">
                 <Image :src="n.image" />
