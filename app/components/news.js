@@ -7,6 +7,10 @@
  
 const articleReader= require("./articleReader");
 
+ 
+ const conspiraciesComingSooon= require("../components/modals/cons");
+
+
 const main= {
   data() {
     return {
@@ -82,6 +86,12 @@ const main= {
             whi="Conspiracies coming this Friday 13/07/18 "
             this.bottomMenu[1].col="#C94446";
             this.bottomMenu[1].textcol="white";
+            
+            this.$showModal(conspiraciesComingSooon);
+            //open modal
+             
+            
+
             break;
             case "Home":
             whi="Already home";
@@ -104,7 +114,7 @@ const main= {
     },
     openNews(args){
         //opens news in a modal
-        this.$showModal(articleReader,{ context: { propsData: { url:args.item.url}}});
+        this.$showModal(articleReader,{ context: { propsData: { url:args.item.url,title:args.item.title}}});
 
      },
      openSourceDialog(){
@@ -235,8 +245,15 @@ const main= {
   created(){
     this.grabAllSources();
     this.loadNewsArticles(this.source,this.tag);
+    
+     
+
 
   },
+  mounted(){
+   
+  }
+  ,
   template: `
     <Page class="page"
      >
@@ -264,6 +281,9 @@ const main= {
     <ListView @itemTap="openNews" height="90%"  for="n in articles" >
       <v-template>
          <StackLayout>
+    
+  
+
             <StackLayout class="newsItemImage">
             <Image :src="n.image" />
             </StackLayout>
