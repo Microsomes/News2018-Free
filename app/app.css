@@ -1,6 +1,7 @@
 @import 'nativescript-theme-core/css/core.light.css';
 
 @import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('https://use.fontawesome.com/releases/v5.1.0/css/all.css');
 
 .page{
     font-family: 'Roboto', sans-serif;
@@ -79,3 +80,12 @@ ListPicker{
     height:1000px;
     background:red;
 }
+.listOfItems{
+     background:red;
+}
+
+.font-awesome {
+    font-family: "FontAwesome";
+}
+
+ 

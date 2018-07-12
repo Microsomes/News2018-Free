@@ -10,6 +10,34 @@ const articleReader= require("./articleReader");
 const main= {
   data() {
     return {
+        bottomMenu:[
+            {
+                text:'Home',
+                image:'https://png.pngtree.com/element_pic/00/16/07/165789984e908db.jpg',
+                col:"#C94446",
+                textcol:"white"
+            },
+            {
+                text:'Conspiracies',
+                image:'https://png.pngtree.com/element_pic/00/16/07/165789984e908db.jpg',
+                col:"white"
+            },
+            {
+                text:'Premium',
+                image:'https://png.pngtree.com/element_pic/00/16/07/165789984e908db.jpg',
+                col:"white"
+            }
+        ],
+        listOfItems:[
+            "one",
+            "two",
+            "three",
+            "four",
+            "one",
+            "two",
+            "three",
+            "four"
+        ],
     appName:'News Research Apps',
       source:'bbc-news',
       tag:'topHeadlines',
@@ -36,8 +64,31 @@ const main= {
          this.loadNewsArticles(source,"topHeadlines");
          //calls method to load news articles
     },
-    openNews(url){
-        this.$showModal(articleReader,{ context: { propsData: { url:url}}});
+    openConspiracies(which){
+        var whi=null;
+        switch(which){
+            case "Conspiracies":
+            //open conspiracies
+            whi="Conspiracies coming this Friday 13/07/18 "
+            break;
+            case "Home":
+            whi="Already home";
+            break;
+            case "Premium":
+            whi="premium coming soon"
+            break;
+        }
+        //method opens conspiracies
+        var options = {
+            text: whi,
+            duration : nstoasts.DURATION.SHORT,
+            position : nstoasts.POSITION.BOTTOM //optional
+        }
+        nstoasts.show(options);
+    },
+    openNews(args){
+        //opens news in a modal
+        this.$showModal(articleReader,{ context: { propsData: { url:args.item.url}}});
 
      },
      openSourceDialog(){
@@ -171,40 +222,38 @@ const main= {
 
   },
   template: `
-    <Page class="page">
+    <Page class="page"
+     >
        
     <ActionBar flat="true" title="The News Research App">
     
-     <NavigationButton android.systemIcon="ic_menu_add"  />
- 
+  
     <ActionItem @tap="openSourceDialog" text="sources"></ActionItem>
 
     <ActionItem @tap="refreshNews" android.systemIcon="ic_menu_refresh"></ActionItem>
     </ActionBar>
-   <ScrollView>
-
+ 
   
       <StackLayout>
 
- 
+     
          
       <SegmentedBar selectedIndex="0"      @selectedIndexChange="selectedTag" selectedBackgroundColor="#787878" backgroundColor="grey" class="sourceTagFilters">
       <SegmentedBarItem title="Headlines" />
       <SegmentedBarItem title="Bitcoin" />
       <SegmentedBarItem title="Politics" />
     </SegmentedBar>
-    
- 
-         <StackLayout @tap="openNews(n.url)"  v-for="n in articles" class="newsItem">
-            
+
+    <ScrollView>
+    <ListView @itemTap="openNews" height="90%"  for="n in articles" >
+      <v-template>
+         <StackLayout>
             <StackLayout class="newsItemImage">
-                <Image :src="n.image" />
+            <Image :src="n.image" />
             </StackLayout>
-            
             <StackLayout class="newsItemTitle">
                 <Label textWrap="true" :text="n.title"></Label>
             </StackLayout>
-
             <StackLayout orientation="Horizontal" class="newsItemMetric">
             <Label class="metric" :text="n.source"></Label>
             <Label class="metric" :text="n.tt"></Label>
@@ -212,12 +261,29 @@ const main= {
 
 
         </StackLayout>
- 
+      </v-template>
+    </ListView>
+    </ScrollView>
 
+    
+    <DockLayout width="100%" height="15%"   stretchLastChild="false">
+    
+    <StackLayout text="bottom" dock="bottom" height="61"  >
+        <FlexboxLayout flexDirection="row" width="100%" height="100%"  >
+        
+        <FlexboxLayout v-for="n in bottomMenu"  width="33.3%" height="100%"  flexDirection="column" justifyContent="center" alignItems="center">
+         <Button @tap="openConspiracies(n.text)" :color="n.textcol" :background="n.col" style="font-size:13px" height="100%" width="100%" :text="n.text"></Button>
+        </FlexboxLayout>
+
+        
+ 
+     </FlexboxLayout>
+    </StackLayout>
+  </DockLayout>
+            
  
       </StackLayout>
-      </ScrollView>
-
+ 
     </Page>
   `,
   components: {
