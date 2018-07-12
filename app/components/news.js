@@ -66,16 +66,32 @@ const main= {
     },
     openConspiracies(which){
         var whi=null;
+
+        //reset menu state
+        this.bottomMenu[0].col="white";
+        this.bottomMenu[1].col="white";
+        this.bottomMenu[2].col="white";
+
+        this.bottomMenu[0].textcol="black";
+        this.bottomMenu[1].textcol="black";
+        this.bottomMenu[2].textcol="black";
+
         switch(which){
             case "Conspiracies":
             //open conspiracies
             whi="Conspiracies coming this Friday 13/07/18 "
+            this.bottomMenu[1].col="#C94446";
+            this.bottomMenu[1].textcol="white";
             break;
             case "Home":
             whi="Already home";
+            this.bottomMenu[0].col="#C94446";
+            this.bottomMenu[0].textcol="white";
             break;
             case "Premium":
             whi="premium coming soon"
+            this.bottomMenu[2].col="#C94446";
+            this.bottomMenu[2].textcol="white";
             break;
         }
         //method opens conspiracies
