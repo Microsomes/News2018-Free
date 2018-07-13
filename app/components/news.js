@@ -83,12 +83,17 @@ const main= {
         switch(which){
             case "Conspiracies":
             //open conspiracies
-            whi="Conspiracies coming this Friday 13/07/18 "
+            whi="Conspiracies loading"
             this.bottomMenu[1].col="#C94446";
             this.bottomMenu[1].textcol="white";
             
-            this.$showModal(conspiraciesComingSooon);
-            //open modal
+            // this.$showModal(conspiraciesComingSooon);
+            // //open modal
+            this.sourceListv1=[];
+            this.sourceListv1.push("SocialStation-Conspiracies");
+            this.source="SocialStation-Conspiracies";
+            //set the current source
+            this.loadConspiracies(this.tag);
              
             
 
@@ -97,6 +102,15 @@ const main= {
             whi="Already home";
             this.bottomMenu[0].col="#C94446";
             this.bottomMenu[0].textcol="white";
+
+            this.sourceListv1=[];
+             this.source="bbc-news";
+            //set the current source
+            this.grabAllSources();
+            //load all the traditional sources back
+            this.loadNewsArticles(this.source,this.tag);
+            
+
             break;
             case "Premium":
             whi="premium coming soon"
@@ -128,12 +142,78 @@ const main= {
                 if(result=="Wait, Cancel"){
                     return;
                 }
+                switch(result){
+                    case "SocialStation-Conspiracies":
+                    console.log("social station conspiracies loading");
+                    home.source=result;
+                     this.loadConspiracies("topHeadlines");
+                    return;
+                    break;
+                }
                 home.loadNewsArticles(result,home.tag);
                 //load top headlines
                 home.source=result;
                 //save source
                 
             });
+     },
+     loadConspiracies(tag){
+        //method loads conspiracies
+        this.articles=[];
+        //clear current articles before loading more in
+        var apiReqLink=null;//determined by the tag
+        var home=this;
+
+        switch(tag){
+            case "topHeadlines":
+            //load headlines
+
+            apiReqLink="http://178.128.40.186/cons/getConspiracies/headlines";
+
+            break;
+            case "Bitcoin":
+            apiReqLink="http://178.128.40.186/cons/getConspiracies/bitcoin";
+            break;
+            case "Politics":
+            apiReqLink="http://178.128.40.186/cons/getConspiracies/politics";
+            break;
+        }
+
+        if(apiReqLink){
+            //execute and parse
+            var result = okHttp.getString(apiReqLink);
+            var resultJson= JSON.parse(result);
+            var tots=  resultJson["articles"].length;
+            
+            var articlesArr= resultJson["articles"];
+
+            for(var i=0;i<tots;i++){
+                var curArticle= articlesArr[i];
+
+                var curtitle= curArticle["title"];
+                var curdescription= curArticle["description"] || "";
+                var cururl= curArticle["url"]; 
+                var curImage= curArticle["urlToImage"] || "http://www.independentmediators.co.uk/wp-content/uploads/2016/02/placeholder-image.jpg";
+                var curPublishedAt= curArticle["publishedAt"];
+                var curAuthor= curArticle["author"] || "Chris Mahatman";
+                var curSource=  curArticle["author"] || "News";
+                var tt= Moments(curPublishedAt).fromNow(); 
+                 
+                home.articles.push({
+                    title:curtitle,
+                    image:curImage,
+                    source:curSource,
+                    url:cururl,
+                    tt,
+                })
+            }
+            
+            
+            
+
+        }
+         
+        
      },
     grabAllSources(){
         //connects to the newsapi org to grab a list of source
@@ -153,6 +233,7 @@ const main= {
 
     },
     selectedTag(tag){
+        
         var home=this;
         var finalTag='';
         switch(tag.value){
@@ -166,9 +247,18 @@ const main= {
             finalTag="Politics";
             break;
         }
-        this.loadNewsArticles(home.source,finalTag);
+        
         //send command to load the damn news
         home.tag=finalTag;
+
+        if(this.source=="SocialStation-Conspiracies"){
+            //we are in conspiracies mode so normal activities are cancelled
+            this.loadConspiracies(finalTag);
+            return;
+        }
+
+        this.loadNewsArticles(home.source,finalTag);
+         
     },
     refreshNews(){
         //method refreshes news
