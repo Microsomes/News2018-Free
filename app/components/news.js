@@ -27,7 +27,7 @@ const main= {
                 col:"white"
             },
             {
-                text:'Premium',
+                text:'Stalker',
                 image:'https://png.pngtree.com/element_pic/00/16/07/165789984e908db.jpg',
                 col:"white"
             }
@@ -87,7 +87,8 @@ const main= {
             this.bottomMenu[1].col="#C94446";
             this.bottomMenu[1].textcol="white";
             
-            // this.$showModal(conspiraciesComingSooon);
+             //this.$showModal(conspiraciesComingSooon);
+             
             // //open modal
             this.sourceListv1=[];
             this.sourceListv1.push("SocialStation-Conspiracies");
@@ -99,7 +100,7 @@ const main= {
 
             break;
             case "Home":
-            whi="Already home";
+            whi="Home";
             this.bottomMenu[0].col="#C94446";
             this.bottomMenu[0].textcol="white";
 
@@ -112,8 +113,8 @@ const main= {
             
 
             break;
-            case "Premium":
-            whi="premium coming soon"
+            case "Stalker":
+            whi="stalker mode coming soon"
             this.bottomMenu[2].col="#C94446";
             this.bottomMenu[2].textcol="white";
             break;
@@ -351,7 +352,7 @@ const main= {
     <ActionBar flat="true" title="The News Research App">
     
   
-    <ActionItem @tap="openSourceDialog" text="sources"></ActionItem>
+    <ActionItem @tap="openSourceDialog" text="source"></ActionItem>
 
     <ActionItem @tap="refreshNews" android.systemIcon="ic_menu_refresh"></ActionItem>
     </ActionBar>
