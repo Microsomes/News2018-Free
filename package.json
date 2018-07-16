@@ -18,6 +18,7 @@
 		"nativescript-okhttp": "0.0.8",
 		"nativescript-pulltorefresh": "^2.1.1",
 		"nativescript-sidedrawer": "^1.0.6",
+		"nativescript-sqlite": "2.2.1",
 		"nativescript-theme-core": "^1.0.4",
 		"nativescript-toasts": "^1.0.3",
 		"nativescript-ui-chart": "^3.7.0",

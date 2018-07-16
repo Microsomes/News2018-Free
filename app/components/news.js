@@ -348,12 +348,11 @@ const main= {
   template: `
     <Page class="page"
      >
+
+
        
     <ActionBar flat="true" title="The News Research App">
-    
-  
     <ActionItem @tap="openSourceDialog" text="source"></ActionItem>
-
     <ActionItem @tap="refreshNews" android.systemIcon="ic_menu_refresh"></ActionItem>
     </ActionBar>
  

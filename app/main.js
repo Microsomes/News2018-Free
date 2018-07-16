@@ -8,7 +8,9 @@ const About= require('./components/about');
 
 const News= require('./components/news');
 
+const entry= require("./components/refactored/main.js");
+
  
 new Vue({
-  render: h => h(News),
+  render: h => h(entry),
 }).$start();

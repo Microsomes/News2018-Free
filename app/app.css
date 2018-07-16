@@ -88,4 +88,33 @@ ListPicker{
     font-family: "FontAwesome";
 }
 
+.source_selector_hint{
+    text-align: center;
+    vertical-align: center;
+    color:white;
+    background-color: #CF4748;
+    font-family: 'Roboto', sans-serif;
+    font-size: 20px;
+    text-transform: capitalize;
+}
+
+.verticleAlign_source_select{
+    vertical-align: center;
+    font-size: 20px;
+    padding-left: 20px;
+    
+}
+.circle{
+    height:150px;
+    width: 150px;
+    border-radius: 50%;
+    background:#CA4645;
+ }
  
+ .souce_select_circle_text{
+     vertical-align: center;
+     text-align: center;
+     color:white;
+      font-size: 20px;
+      text-transform: uppercase;
+ }
