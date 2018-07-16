@@ -1,5 +1,7 @@
 const Vue = require('nativescript-vue');
 
+
+
  
 const App = require('./components/App');
 

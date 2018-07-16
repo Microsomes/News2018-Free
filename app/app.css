@@ -56,15 +56,15 @@ ListPicker{
   }
 
 .newsItemImage{
-    height:500px;
+    height:600px;
+    width: 100%
  }
 .newsItemTitle{
     background:white;
     font-size:20px;
     font-weight: bold;
     padding:10px;
-    margin-left: 70px;
-}
+ }
 .metric{
     text-align: center;
     width: 50%;
@@ -102,6 +102,7 @@ ListPicker{
     vertical-align: center;
     font-size: 20px;
     padding-left: 20px;
+    text-transform: capitalize;
     
 }
 .circle{

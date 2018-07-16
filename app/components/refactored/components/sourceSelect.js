@@ -6,6 +6,7 @@ module.exports={
         return {
             title:"Newsify",
             currentSourceSelectedValue:0,
+            currentSouceSelected:'All Sources',
             sourceCategores:["All Sources", "technology","Liveuamap","Reddit","conspiracies","business", "entertainment", "general", "health", "science", "sports"],
             sources:[],
             isLoading:false
@@ -17,7 +18,7 @@ module.exports={
             var home=this;
             if(sources){
                 console.log("requesting"+sources);
-            var apiLink="http://192.168.0.54:80/news/sources/"+sources;
+            var apiLink="http://178.128.40.186/news/sources/"+sources;
             httpModule.getJSON(apiLink).then((r) => {
                 home.isLoading=false;
                 var sources= r["sources"];
@@ -45,6 +46,7 @@ module.exports={
         handleTabSelector(value){
             console.log(value.value);
             console.log(this.sourceCategores[value.value]);
+            this.currentSouceSelected=this.sourceCategores[value.value];
             this.sources=[];
 
             switch(this.sourceCategores[value.value]){
@@ -72,6 +74,15 @@ module.exports={
                 case "technology":
                 this.grabApiOrgNewsSouces("technology");
                 break;
+                case "Reddit":
+                this.grabApiOrgNewsSouces("reddit");
+                break;
+                case "Liveuamap":
+                this.grabApiOrgNewsSouces("liveuamap");
+                break;
+                case "conspiracies":
+                this.grabApiOrgNewsSouces("conspiracies");
+                break;
 
                 default:
                 this.grabApiOrgNewsSouces("entertainment")
@@ -80,13 +91,36 @@ module.exports={
         },
         allSources(){
             //load all sources
-            this.grabApiOrgNewsSouces("entertainment");
-            this.grabApiOrgNewsSouces("general");
-            this.grabApiOrgNewsSouces("health");
-            this.grabApiOrgNewsSouces("science");
-            this.grabApiOrgNewsSouces("sports");
-            this.grabApiOrgNewsSouces("technology");
-            this.grabApiOrgNewsSouces("business");
+            this.grabApiOrgNewsSouces("everything");
+           
+        },
+        souceClicked(e){
+
+            if(this.currentSouceSelected=="Liveuamap"){
+                //handle liveuamp source loading a bit differently
+                return;
+            }
+            if(this.currentSouceSelected=="Reddit"){
+                //handle Reddit source loading a bit differently
+                return;
+            }
+            if(this.currentSouceSelected=="conspiracies"){
+                //handle conspiracies source loading a bit differently
+                return;
+            }
+
+            //a source has been clicked on
+            var str = e.item;
+            var fixed = str.replace(/\s+/g, '-').toLowerCase();
+            console.log(fixed); // "sonic-free-games";
+
+            this.$modal.close({
+                source:fixed,
+                filer:true,
+                type:"apiorg"
+            });
+
+
         }
     },
     created(){
@@ -106,6 +140,7 @@ module.exports={
 
     <StackLayout class="source_selector_hint" height="200px" >
         <Label text="pick a source"></Label>
+        <Label :text="currentSouceSelected"></Label>
     </StackLayout>
 
     <ScrollView orientation="horizontal">
@@ -120,7 +155,7 @@ module.exports={
 
 
 
-    <ListView height="100%" for="item in sources" >
+    <ListView @itemTap="souceClicked" height="100%" for="item in sources" >
     <v-template>
     <StackLayout padding="10px" orientation="horizontal">
         <!-- Shows the list item label in the default color and stye. -->

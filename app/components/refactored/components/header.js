@@ -1,12 +1,14 @@
 var nstoasts = require("nativescript-toasts");
 const sourceModal= require("./../components/sourceSelect");
 //source select modal
+const httpModule = require("http");
+
 
 
 module.exports={
     data(){
         return {
-            title:"Newsify- BBC News",
+            title:"Newsify",
             state:{
                 tag:'headlines',
                 source:'bbc-news'
@@ -20,8 +22,35 @@ module.exports={
         this.toToast("refreshing"+this.state.tag);
         },
         openSources(){
+            var  home=this;
             this.toToast("Opening");
-            this.$showModal(sourceModal).then(data => console.log(data));
+            this.$showModal(sourceModal).then(data => {
+                
+                
+                if(data.type=="apiorg"){
+                    console.log("api org");
+                    //handie apiorg requests
+                    this.loadApiOrgArticle_default(data.source);
+                    //load news articles
+                }            
+            
+            });
+
+        },
+        loadApiOrgArticle_default(source){
+             var home=this;
+            //load via source default
+            console.log("loading");
+
+            var apiLink="http://178.128.40.186/news/newsapi/"+source+",headlines,newsapiorg";
+            httpModule.getJSON(apiLink).then((r) => {
+               
+                home.$emit("articlesLoad",r);
+                //send data to main to process
+
+            },(e)=>{
+                console.log(e);
+            });
 
         },
         toToast(msg){
@@ -53,6 +82,8 @@ module.exports={
 
 
 
+    },created(){
+        this.loadApiOrgArticle_default("bbc-news");
     }
     ,
     template:
