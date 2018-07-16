@@ -16,6 +16,13 @@ module.exports={
         }
     },
     methods:{
+        changeTitle(title){
+            var title= title;
+
+             var str = title.replace(/\s+/g, ' ').toUpperCase();
+             this.title="Newsify "+str;
+        },
+
         refreshNewsSource(){
         //method that refreshes news
         this.toToast("refreshing"+this.state.source);
@@ -37,12 +44,47 @@ module.exports={
             });
 
         },
-        loadApiOrgArticle_default(source){
+        loadApiOrgArticle_tag(tag){
+            if(tag=="Headlines"){
+                console.log("creep back to full headlines");
+                this.state.tag="headlines";
+                this.loadApiOrgArticle_default(this.state.source);
+                return;
+            }
+             console.log("---------------");
+             console.log(tag);
+            this.state.tag= tag;
+
+            console.log(this.state.source);
+            console.log("----tag");
+            console.log(tag);
+
+          
+            
              var home=this;
             //load via source default
             console.log("loading");
 
-            var apiLink="http://178.128.40.186/news/newsapi/"+source+",headlines,newsapiorg";
+            var apiLink="http://178.128.40.186/news/newsapi/"+this.state.source+","+tag+",newsapiorg";
+            httpModule.getJSON(apiLink).then((r) => {
+               
+                home.$emit("articlesLoad",r);
+                //send data to main to process
+
+            },(e)=>{
+                console.log(e);
+            });
+        },
+        loadApiOrgArticle_default(source){
+            this.state.source= source;
+
+            this.changeTitle(source);
+            
+             var home=this;
+            //load via source default
+            console.log("loading");
+
+            var apiLink="http://178.128.40.186/news/newsapi/"+source+","+this.state.tag+",newsapiorg";
             httpModule.getJSON(apiLink).then((r) => {
                
                 home.$emit("articlesLoad",r);
@@ -84,6 +126,15 @@ module.exports={
 
     },created(){
         this.loadApiOrgArticle_default("bbc-news");
+        this.$on("tagSelected",(msg)=>{
+            console.log(msg);
+        });
+
+    },
+    mounted(){
+        this.$on('test', function (msg) {
+            console.log(msg)
+        })
     }
     ,
     template:

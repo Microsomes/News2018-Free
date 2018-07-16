@@ -14,7 +14,7 @@ const application = require("tns-core-modules/application");
 const exit = require('nativescript-exit').exit;
 
 
-
+console.log('min(3, 4) = ', java.lang.Math.min(3, 4));
 
 
 module.exports={
@@ -22,22 +22,32 @@ module.exports={
         return {
             isTagSelector:true,
             articles:[],
-            isLoading:false
+            isLoading:true
         }
     },
     methods:{
+        tagSe(data){
+            this.$refs.header_comp.loadApiOrgArticle_tag(data);
+            this.isLoading=true;
+        },
         openNews(args){
              this.$showModal(articleReader,{ context: { propsData: { url:args.item.url,title:args.item.title}}});
 
         },
         articlesLoad(data){
+            this.isLoading=true;
+
               this.articles=[];
             this.isLoading=true;
               var home=this;
              console.log("---");
              var articles= data["articles"];
              var tots= data["totalResults"];
-             for(var i=0;i<tots;i++){
+             for(var i=0;i<=tots;i++){
+
+                if(tots==i){
+                    this.isLoading=false;
+                }
                   
              var cur= articles[i];
              var cur_author= cur["author"] || "Chris Mahat";
@@ -49,8 +59,7 @@ module.exports={
              var cur_title= cur["title"];
              var cur_url= cur["url"];
              var cur_url_to_image= cur["urlToImage"] || "http://www.independentmediators.co.uk/wp-content/uploads/2016/02/placeholder-image.jpg";
-            home.isLoading=false;
-             home.articles.push({
+              home.articles.push({
                 image:cur_url_to_image,
                 title:cur_title,
                 source:cur_source,
@@ -59,13 +68,14 @@ module.exports={
             })
         }
 
+
         var options = {
             text: "data loaded please scroll up to see recents",
             duration : nstoasts.DURATION.LONG,
             position : nstoasts.POSITION.BOTTOM //optional
         }
         nstoasts.show(options);
-
+ 
 
 
        
@@ -98,11 +108,11 @@ module.exports={
     `
     <Page ref="myPage" class="page">  
     
-    <header @articlesLoad="articlesLoad"></header>
+    <header ref="header_comp" @articlesLoad="articlesLoad"></header>
  
     <StackLayout>
 
-    <tagSelector v-if="isTagSelector"></tagSelector>
+    <tagSelector @test="tagSe" v-if="isTagSelector"></tagSelector>
 
     <ActivityIndicator v-if="isLoading" :busy="isLoading" />
 
