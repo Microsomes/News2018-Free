@@ -19,7 +19,12 @@ module.exports={
     },
     methods:{
         loadRedditData(tag){
-            
+            this.state.source="reddit";
+            //set the last source
+            this.state.tag=tag;
+            var savedState= applicationSettings.setString("lastSource","reddit");
+            var lasedTag= applicationSettings.setString("lastTag",tag);
+
             console.log("loading reddit"+tag);
             var url="http://"+SERVER_IP+"/crawler/reddit/"+tag;
              var home=this;
@@ -33,6 +38,12 @@ module.exports={
              });
         },
         loadLiveUamapData(tag){
+
+            this.state.source="liveuamap";
+            //set the last source
+            this.state.tag=tag;
+            var savedState= applicationSettings.setString("lastSource","liveuamap");
+            var lasedTag= applicationSettings.setString("lastTag",tag);
  
             console.log("processing"+tag);
             var url= "http://"+SERVER_IP+"/crawler/liveuamap/"+tag;
@@ -58,6 +69,16 @@ module.exports={
 
         refreshNewsSource(){
             this.$emit("show_article_is_loading","loading");
+            if(this.state.source=="reddit"){
+                //handle the refresh of this source slightly differntly
+                this.loadRedditData(this.state.tag);
+                return;
+            }
+            if(this.state.source=="liveuamap"){
+                //handle the refresh of this source slightly differently
+                this.loadLiveUamapData(this.state.tag);
+                return;
+            }
         //method that refreshes news
          this.loadApiOrgArticle_tag(this.state.tag);
         },
@@ -188,11 +209,34 @@ module.exports={
 
 
     },created(){
+        var home=this;
          var savedState= applicationSettings.getString("lastSource");
         if(savedState==undefined || savedState==null){
             //no saved state give dafault
             this.loadApiOrgArticle_default("bbc-news");
         }else{
+            if(savedState=="reddit"){
+                //handle reddit reloads differently
+                var lasedTag= applicationSettings.getString("lastTag");
+                if(lasedTag==undefined || lasedTag==null){
+                    home.loadRedditData("FORTnITE");
+                }else{
+                    home.loadRedditData(lasedTag);
+                }
+                return;
+            }
+            if(savedState=="liveuamap"){
+                //handle reddit reloads differently
+                var lasedTag= applicationSettings.getString("lastTag");
+                if(lasedTag==undefined || lasedTag==null){
+                    home.loadLiveUamapData("us");
+                }else{
+                    home.loadLiveUamapData(lasedTag);
+                }
+                return;
+            }
+
+             
             this.loadApiOrgArticle_default(savedState);
         }
          
