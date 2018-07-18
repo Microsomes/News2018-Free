@@ -96,13 +96,34 @@ module.exports={
            
         },
         souceClicked(e){
+            var home=this;
+            //this.$emit("loadProcess","loading");
+
 
             if(this.currentSouceSelected=="Liveuamap"){
                 //handle liveuamp source loading a bit differently
+
+                let tag= e.item;
+                //tag
+                this.$modal.close({
+                    source:tag,
+                    filer:false,
+                    type:"liveuamp"
+                });
+
+
+
                 return;
             }
             if(this.currentSouceSelected=="Reddit"){
                 //handle Reddit source loading a bit differently
+                let tag= e.item;
+                //tag
+                this.$modal.close({
+                    source:tag,
+                    filer:false,
+                    type:"reddit"
+                });
                 return;
             }
             if(this.currentSouceSelected=="conspiracies"){
@@ -152,7 +173,7 @@ module.exports={
 
     </ScrollView>
 
-    <ActivityIndicator v-if="isLoading" :busy="isLoading" />
+    <ActivityIndicator color="#CE4947" v-if="isLoading" :busy="isLoading" />
 
 
 

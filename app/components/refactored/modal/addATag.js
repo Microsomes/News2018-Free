@@ -1,0 +1,4 @@
+/*
+Author Muhammed T Javed
+modal view is used to add another tag 
+*/

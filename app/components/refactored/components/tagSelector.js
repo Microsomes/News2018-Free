@@ -8,16 +8,27 @@ module.exports={
                 "Politics",
                 "War",
                 "Trending",
-                "Twinkies"
+                "Twinkies",
+                "Add Tag"
             ]
         }
     },
     methods:{
+        hideTags(){
+            //method will hide the tags
+            console.log("request came in to hide the tags");
+        },
         tagSelected(args){
+            if(this.tags[args.value]=="Add Tag"){
+                console.log("add tag");
+                return;
+            }
             console.log("tag selected");
             //tag selected
             this.$emit('test', this.tags[args.value]);
          }
+    },created(){
+        //find if any additional tags have been created and add them
     }
     ,
     template:

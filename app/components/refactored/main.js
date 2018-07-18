@@ -16,6 +16,11 @@ const exit = require('nativescript-exit').exit;
 
 console.log('min(3, 4) = ', java.lang.Math.min(3, 4));
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+  
+
 
 module.exports={
     data(){
@@ -28,6 +33,42 @@ module.exports={
         }
     },
     methods:{
+        async parse_article_reddit(data){
+            this.isLoading=true;
+            this.showFeedback=true;
+            this.articles=[];
+            this.feedback="loading data from reddit.com and parsing it";
+            await sleep(1000);
+            console.log("parsing now");
+            this.showFeedback=false;
+            this.isLoading=false;
+              this.articles=[];
+
+               var home=this;
+             console.log("---");
+             var articles= data["articles"];
+             var tots= data["totalResults"];
+
+             for(var i=0;i<tots;i++){
+             var curArticle= articles[i];
+             var curTitle= curArticle["title"];
+             var curAuthor= curArticle["author"];
+             var curPublishedAt= curArticle["publishedAt"];
+             var tt= Moments(curPublishedAt).fromNow();
+             var curUrl= curArticle["url"];
+             var urlToImg= curArticle["urlToImg"];
+             home.articles.push({
+                image:urlToImg,
+                title:curTitle,
+                source:curAuthor,
+                tt:tt,
+                url:curUrl
+            })
+        }
+
+            
+ 
+        },
         show_loading_article(){
             this.isLoading=true;
             this.showFeedback=true;
@@ -41,7 +82,7 @@ module.exports={
             //turn loading off
             this.articles=[];
             //remove all articles
-            this.feedback="no articles related to the tag selected";
+            this.feedback="no articles found. Please try another tag or alternatively add your own";
             this.showFeedback=true;
             //show the feedback message to the user
             console.log("showing no data ");
@@ -49,9 +90,69 @@ module.exports={
         tagSe(data){
             this.$refs.header_comp.loadApiOrgArticle_tag(data);
             this.isLoading=true;
+            this.articles=[];
         },
         openNews(args){
              this.$showModal(articleReader,{ context: { propsData: { url:args.item.url,title:args.item.title}}});
+
+        },
+        filter_change(data){
+            //handles turning the filter off or on
+            if(data=="off"){
+                console.log("turning filter off now");
+                this.isTagSelector=false;
+                //call to close 
+            }else{
+                console.log("turning filter back on now");
+                this.isTagSelector=true;
+
+            }
+        },
+        async articlesLoad_live(data){
+            this.isLoading=true;
+            this.showFeedback=true;
+            this.articles=[];
+            this.feedback="loading data from liveuamap.com and parsing it";
+            await sleep(1000);
+             this.showFeedback=false;
+            this.isLoading=true;
+              this.articles=[];
+               var home=this;
+             console.log("---");
+             var articles= data["articles"];
+             var tots= data["totalResults"];
+             for(var i=0;i<=tots;i++){
+
+                if(tots==i){
+                    this.isLoading=false;
+                }
+                  
+             var cur= articles[i];
+             var cur_author= cur["author"] || "Chris Mahat";
+             var cur_description= cur["description"] || "---";
+             var cur_publishedAt= cur["publishedAt"];
+              
+
+             var cur_source= cur["source"].name || "Microsomesapi";
+             var cur_title= cur["title"];
+             var cur_url= cur["url"];
+             var cur_url_to_image= cur["urlToImage"] || "http://www.independentmediators.co.uk/wp-content/uploads/2016/02/placeholder-image.jpg";
+              home.articles.push({
+                image:cur_url_to_image,
+                title:cur_title,
+                source:cur_source,
+                tt:cur_publishedAt,
+                url:cur_url
+            })
+        }
+
+
+        var options = {
+            text: "data loaded please scroll up to see recents",
+            duration : nstoasts.DURATION.LONG,
+            position : nstoasts.POSITION.BOTTOM //optional
+        }
+        nstoasts.show(options);
 
         },
         articlesLoad(data){
@@ -127,15 +228,15 @@ module.exports={
     `
     <Page ref="myPage" class="page">  
     
-    <header ref="header_comp"  @show_article_is_loading="show_loading_article" @articles_error="show_no_data" @articlesLoad="articlesLoad"></header>
+    <header @parse_article_reddit="parse_article_reddit" ref="header_comp" @articlesLoad_live="articlesLoad_live" @filter_change="filter_change"  @show_article_is_loading="show_loading_article" @articles_error="show_no_data" @articlesLoad="articlesLoad"></header>
  
     <StackLayout>
 
-    <tagSelector @test="tagSe" v-if="isTagSelector"></tagSelector>
+    <tagSelector ref="tag_comp" @test="tagSe" v-if="isTagSelector"></tagSelector>
 
-    <ActivityIndicator v-if="isLoading" :busy="isLoading" />
+    <ActivityIndicator color="#CE4947" v-if="isLoading" :busy="isLoading" />
 
-    <Label  v-show="showFeedback"  :text="feedback"></Label>
+    <Label class="errorMessage"  v-show="showFeedback"  :text="feedback"></Label>
     
     <ScrollView   ref="main_scroll"  id="myScroller">
     <ListView  @itemTap="openNews" ref="main_list_view"   height="100%" for="n in articles"     >

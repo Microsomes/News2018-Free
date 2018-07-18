@@ -18,33 +18,77 @@ module.exports={
         }
     },
     methods:{
+        loadRedditData(tag){
+            
+            console.log("loading reddit"+tag);
+            var url="http://"+SERVER_IP+"/crawler/reddit/"+tag;
+             var home=this;
+
+             httpModule.getJSON(url).then((r) => {
+               
+                 this.$emit("parse_article_reddit",r);
+
+            },(e)=>{
+                 console.log(e);
+             });
+        },
+        loadLiveUamapData(tag){
+ 
+            console.log("processing"+tag);
+            var url= "http://"+SERVER_IP+"/crawler/liveuamap/"+tag;
+             var home=this;
+
+            httpModule.getJSON(url).then((r) => {
+               
+                home.$emit("articlesLoad_live",r);
+
+            },(e)=>{
+                console.log(e);
+            });
+        },
         refreshNews(){
             console.log("refreshing news");
         },
         changeTitle(title){
-            var title= title;
+            // var title= title;
 
-             var str = title.replace(/\s+/g, ' ').toUpperCase();
-             this.title="Newsify "+str;
+            //  var str = title.replace(/\s+/g, ' ').toUpperCase();
+            //  this.title="Newsify "+str;
         },
 
         refreshNewsSource(){
+            this.$emit("show_article_is_loading","loading");
         //method that refreshes news
-        this.toToast("refreshed scroll up if applicable");   
-        this.loadApiOrgArticle_tag(this.state.tag);
+         this.loadApiOrgArticle_tag(this.state.tag);
         },
         openSources(){
             var  home=this;
             this.toToast("Opening");
             this.$showModal(sourceModal).then(data => {
-                
+ 
+                if(data.filer){
+                    //request to turn the filter on
+                    console.log("filter on");
+                    this.$emit("filter_change","on");
+                }else{
+                    //request to turn the filter off
+                    console.log("filter off");
+                    this.$emit("filter_change","off");
+                }
                 
                 if(data.type=="apiorg"){
                     console.log("api org");
                     //handie apiorg requests
                     this.loadApiOrgArticle_default(data.source);
                     //load news articles
-                }            
+                }else if(data.type=="liveuamp"){
+                    //will load in liveuamp related data
+                    console.log("loading liveuamp related data");
+                    this.loadLiveUamapData(data.source);
+                }else if(data.type=="reddit"){
+                    console.log("load reddit related data");
+                    this.loadRedditData(data.source);
+                }     
             
             });
 

@@ -119,3 +119,7 @@ ListPicker{
       font-size: 20px;
       text-transform: uppercase;
  }
+
+ .errorMessage{
+     padding:20px;
+ }
