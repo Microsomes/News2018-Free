@@ -1,4 +1,5 @@
 const httpModule = require("http");
+const SERVER_IP="192.168.0.54";
 
 
 module.exports={
@@ -18,7 +19,7 @@ module.exports={
             var home=this;
             if(sources){
                 console.log("requesting"+sources);
-            var apiLink="http://178.128.40.186/news/sources/"+sources;
+            var apiLink="http://"+SERVER_IP+"/news/sources/"+sources;
             httpModule.getJSON(apiLink).then((r) => {
                 home.isLoading=false;
                 var sources= r["sources"];

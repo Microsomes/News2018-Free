@@ -22,10 +22,30 @@ module.exports={
         return {
             isTagSelector:true,
             articles:[],
-            isLoading:true
+            isLoading:true,
+            feedback:"",
+            showFeedback:false
         }
     },
     methods:{
+        show_loading_article(){
+            this.isLoading=true;
+            this.showFeedback=true;
+            this.feedback="grabbing news...";
+            this.articles=[];
+            //clear the articles
+        },
+        show_no_data(){
+            //this method handles the ui when no data is returned by the api
+            this.isLoading=false;
+            //turn loading off
+            this.articles=[];
+            //remove all articles
+            this.feedback="no articles related to the tag selected";
+            this.showFeedback=true;
+            //show the feedback message to the user
+            console.log("showing no data ");
+        },
         tagSe(data){
             this.$refs.header_comp.loadApiOrgArticle_tag(data);
             this.isLoading=true;
@@ -35,11 +55,10 @@ module.exports={
 
         },
         articlesLoad(data){
+            this.showFeedback=false;
             this.isLoading=true;
-
               this.articles=[];
-            this.isLoading=true;
-              var home=this;
+               var home=this;
              console.log("---");
              var articles= data["articles"];
              var tots= data["totalResults"];
@@ -108,7 +127,7 @@ module.exports={
     `
     <Page ref="myPage" class="page">  
     
-    <header ref="header_comp" @articlesLoad="articlesLoad"></header>
+    <header ref="header_comp"  @show_article_is_loading="show_loading_article" @articles_error="show_no_data" @articlesLoad="articlesLoad"></header>
  
     <StackLayout>
 
@@ -116,6 +135,7 @@ module.exports={
 
     <ActivityIndicator v-if="isLoading" :busy="isLoading" />
 
+    <Label  v-show="showFeedback"  :text="feedback"></Label>
     
     <ScrollView   ref="main_scroll"  id="myScroller">
     <ListView  @itemTap="openNews" ref="main_list_view"   height="100%" for="n in articles"     >

@@ -7,7 +7,8 @@ module.exports={
                 "Bitcoin",
                 "Politics",
                 "War",
-                "Trending"
+                "Trending",
+                "Twinkies"
             ]
         }
     },

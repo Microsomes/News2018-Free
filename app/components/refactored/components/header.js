@@ -2,7 +2,9 @@ var nstoasts = require("nativescript-toasts");
 const sourceModal= require("./../components/sourceSelect");
 //source select modal
 const httpModule = require("http");
+const applicationSettings = require("application-settings");
 
+const SERVER_IP="192.168.0.54";
 
 
 module.exports={
@@ -16,6 +18,9 @@ module.exports={
         }
     },
     methods:{
+        refreshNews(){
+            console.log("refreshing news");
+        },
         changeTitle(title){
             var title= title;
 
@@ -25,8 +30,8 @@ module.exports={
 
         refreshNewsSource(){
         //method that refreshes news
-        this.toToast("refreshing"+this.state.source);
-        this.toToast("refreshing"+this.state.tag);
+        this.toToast("refreshed scroll up if applicable");   
+        this.loadApiOrgArticle_tag(this.state.tag);
         },
         openSources(){
             var  home=this;
@@ -51,6 +56,8 @@ module.exports={
                 this.loadApiOrgArticle_default(this.state.source);
                 return;
             }
+            this.$emit("loadProcess","loading");
+            //send an emit to let the main page know we are loading news right now
              console.log("---------------");
              console.log(tag);
             this.state.tag= tag;
@@ -65,18 +72,30 @@ module.exports={
             //load via source default
             console.log("loading");
 
-            var apiLink="http://178.128.40.186/news/newsapi/"+this.state.source+","+tag+",newsapiorg";
+            var apiLink="http://"+SERVER_IP+"/news/newsapi/"+this.state.source+","+tag+",newsapiorg";
             httpModule.getJSON(apiLink).then((r) => {
-               
-                home.$emit("articlesLoad",r);
+               console.log("anaylying if articles returned isnt empty");
+               let articles= r["articles"];
+               if(articles.length<=0){
+                   console.log("tag returned no data");
+                   home.$emit("articles_error","no_data");
+               }else{
+                    home.$emit("articlesLoad",r);
                 //send data to main to process
+               }
+                  
 
             },(e)=>{
                 console.log(e);
             });
         },
         loadApiOrgArticle_default(source){
+            this.$emit("show_article_is_loading","loading");
+            //send emit to main page that an article loading is in progress
             this.state.source= source;
+            var savedState= applicationSettings.setString("lastSource",source);
+            //set source
+
 
             this.changeTitle(source);
             
@@ -84,7 +103,7 @@ module.exports={
             //load via source default
             console.log("loading");
 
-            var apiLink="http://178.128.40.186/news/newsapi/"+source+","+this.state.tag+",newsapiorg";
+            var apiLink="http://"+SERVER_IP+"/news/newsapi/"+source+","+this.state.tag+",newsapiorg";
             httpModule.getJSON(apiLink).then((r) => {
                
                 home.$emit("articlesLoad",r);
@@ -125,10 +144,14 @@ module.exports={
 
 
     },created(){
-        this.loadApiOrgArticle_default("bbc-news");
-        this.$on("tagSelected",(msg)=>{
-            console.log(msg);
-        });
+         var savedState= applicationSettings.getString("lastSource");
+        if(savedState==undefined || savedState==null){
+            //no saved state give dafault
+            this.loadApiOrgArticle_default("bbc-news");
+        }else{
+            this.loadApiOrgArticle_default(savedState);
+        }
+         
 
     },
     mounted(){
