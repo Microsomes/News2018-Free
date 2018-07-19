@@ -18,6 +18,25 @@ module.exports={
         }
     },
     methods:{
+        loadConspiracies(tag){
+            var savedState= applicationSettings.setString("lastSource","cons");
+            var lasedTag= applicationSettings.setString("lastTag",tag);
+            tag= tag.toLowerCase();
+            this.changeTitle("conspiracies");
+            this.$emit("showLoadingState","loading...");
+            var url="http://"+SERVER_IP+"/cons/getConspiracies/"+tag;
+            var home=this;
+            httpModule.getJSON(url).then((r) => {
+               
+                console.log(r);
+                this.$emit("parse_article_cons",r);
+
+
+
+            },(e)=>{
+                 console.log(e);
+            });
+        },
         loadtelegraph(tag){
             this.$emit("showLoadingState","loading...")
             //load yahoo news
@@ -162,9 +181,12 @@ module.exports={
                 }else if(data.type=="telegraph"){
                     console.log("loading telegraph related news");
                     this.loadtelegraph(data.source);
-                }else if(data.type="yahoo"){
+                }else if(data.type=="yahoo"){
                     console.log("loading yahoo related news");
                     this.loadYahoo(data.source);
+                }else if(data.type=="cons"){
+                    console.log("conspiracies processing");
+                    this.loadConspiracies(data.source);
                 }
             
             });
@@ -292,6 +314,18 @@ module.exports={
                     home.loadLiveUamapData("us");
                 }else{
                     home.loadLiveUamapData(lasedTag);
+                }
+                return;
+            }
+            if(savedState=="cons"){
+                //handle reddit reloads differently
+                this.$emit("filter_change","off");
+
+                var lasedTag= applicationSettings.getString("lastTag");
+                if(lasedTag==undefined || lasedTag==null){
+                    home.loadConspiracies("bitcoin");
+                }else{
+                    home.loadConspiracies(lasedTag);
                 }
                 return;
             }

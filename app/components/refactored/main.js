@@ -52,6 +52,42 @@ module.exports={
             sleep(500);
             this.articles=[];
         },
+       async parse_article_cons(data){
+            this.isLoading=true;
+            this.showFeedback=true;
+            this.articles=[];
+            this.feedback="loading data from socialstation.io and parsing it. This may take a few seconds";
+            await sleep(1000);
+            console.log("parsing now");
+            this.showFeedback=false;
+            this.isLoading=false;
+            this.articles=[];
+
+
+            console.log(data);
+            this.$refs.header_comp.changeTitle("-Cons");
+            var home=this;
+            var articles= data["articles"];
+            var tots= data["totalResults"];
+            
+            for(var i=0;i<tots;i++){
+                var curArticle= articles[i];
+                var curTitle= curArticle["title"];
+                var curAuthor= curArticle["author"];
+                var curPublishedAt= curArticle["publishedAt"];
+                var tt= Moments(curPublishedAt).fromNow();
+                var curUrl= curArticle["url"];
+                var urlToImg= curArticle["urlToImage"];
+                home.articles.push({
+                   image:urlToImg,
+                   title:curTitle,
+                   source:curAuthor,
+                   tt:tt,
+                   url:curUrl
+               })
+           }
+
+        },
        async  parse_article_telegraph(data){
             this.isLoading=true;
             this.showFeedback=true;
@@ -335,7 +371,7 @@ module.exports={
     `
     <Page ref="myPage" class="page">  
     
-    <header @parse_article_telegraph="parse_article_telegraph" @showLoadingState="showLoadingState" @parse_article_yahoo="parse_article_yahoo" @parse_article_reddit="parse_article_reddit" ref="header_comp" @articlesLoad_live="articlesLoad_live" @filter_change="filter_change"  @show_article_is_loading="show_loading_article" @articles_error="show_no_data" @articlesLoad="articlesLoad"></header>
+    <header @parse_article_cons="parse_article_cons" @parse_article_telegraph="parse_article_telegraph" @showLoadingState="showLoadingState" @parse_article_yahoo="parse_article_yahoo" @parse_article_reddit="parse_article_reddit" ref="header_comp" @articlesLoad_live="articlesLoad_live" @filter_change="filter_change"  @show_article_is_loading="show_loading_article" @articles_error="show_no_data" @articlesLoad="articlesLoad"></header>
  
     <StackLayout>
 

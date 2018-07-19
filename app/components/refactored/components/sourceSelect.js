@@ -155,6 +155,14 @@ module.exports={
             }
             if(this.currentSouceSelected=="conspiracies"){
                 //handle conspiracies source loading a bit differently
+                console.log("handling conspiracies");
+                let tag= e.item;
+                //tag
+                this.$modal.close({
+                    source:tag,
+                    filer:false,
+                    type:"cons"
+                });
                 return;
             }
 
