@@ -16,15 +16,13 @@ module.exports={
     <Page class="page">
     <ActionBar flat="true" title="Reading...">
     </ActionBar>
-    <ScrollView> 
-    <StackLayout>
+     <StackLayout>
 
     <WebView :src="url" />
 
        
     </StackLayout>
-    </ScrollView>
-    
+     
   </Page>
 
 

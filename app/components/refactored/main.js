@@ -226,7 +226,7 @@ module.exports={
             this.articles=[];
         },
         openNews(args){
-             this.$showModal(articleReader,{ context: { propsData: { url:args.item.url,title:args.item.title}}});
+             this.$navigateTo(articleReader,{ context: { propsData: { url:args.item.url,title:args.item.title}}});
 
         },
         filter_change(data){

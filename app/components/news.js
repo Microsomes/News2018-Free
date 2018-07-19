@@ -129,7 +129,7 @@ const main= {
     },
     openNews(args){
         //opens news in a modal
-        this.$showModal(articleReader,{ context: { propsData: { url:args.item.url,title:args.item.title}}});
+        this.$navigateTo(articleReader,{ context: { propsData: { url:args.item.url,title:args.item.title}}});
 
      },
      openSourceDialog(){

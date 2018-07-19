@@ -1,5 +1,5 @@
 const httpModule = require("http");
-const SERVER_IP="192.168.0.54";
+const SERVER_IP="206.189.25.96";
 const applicationSettings = require("application-settings");
 
 
@@ -10,7 +10,7 @@ module.exports={
             title:"Newsify",
             currentSourceSelectedValue:0,
             currentSouceSelected:'All Sources',
-            sourceCategores:["yahoo","Telegraph","technology","Liveuamap","Reddit","conspiracies","business", "entertainment", "general", "health", "science", "sports"],
+            sourceCategores:["BBC","yahoo","Telegraph","technology","Liveuamap","Reddit","conspiracies","business", "entertainment", "general", "health", "science", "sports"],
             sources:[],
             isLoading:false
         }
@@ -56,6 +56,9 @@ module.exports={
             //lastSelectedSource
 
             switch(this.sourceCategores[value.value]){
+                case "BBC":
+                this.grabApiOrgNewsSouces("bbc");
+                break;
                 case "yahoo":
                 this.grabApiOrgNewsSouces("yahoo");
                 break;
@@ -107,7 +110,8 @@ module.exports={
         souceClicked(e){
             var home=this;
             //this.$emit("loadProcess","loading");
-
+            console.log("tap",e);
+            
             if(this.currentSouceSelected=="yahoo"){
                 let tag= e.item;
                   this.$modal.close({
@@ -206,6 +210,9 @@ module.exports={
             }else if(savedState=="Telegraph"){
                 this.grabApiOrgNewsSouces("telegraph");
                 home.currentSouceSelected="Telegraph";
+            }else if(savedState=="BBC"){
+                this.grabApiOrgNewsSouces("bbc");
+                home.currentSouceSelected="BBC"; 
             }
             else{
             this.grabApiOrgNewsSouces(savedState);

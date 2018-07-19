@@ -4,7 +4,7 @@ const sourceModal= require("./../components/sourceSelect");
 const httpModule = require("http");
 const applicationSettings = require("application-settings");
 
-const SERVER_IP="192.168.0.54";
+const SERVER_IP="206.189.25.96";
 
 
 module.exports={
