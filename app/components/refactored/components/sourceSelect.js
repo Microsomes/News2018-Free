@@ -8,7 +8,7 @@ module.exports={
             title:"Newsify",
             currentSourceSelectedValue:0,
             currentSouceSelected:'All Sources',
-            sourceCategores:["All Sources", "technology","Liveuamap","Reddit","conspiracies","business", "entertainment", "general", "health", "science", "sports"],
+            sourceCategores:["yahoo","Telegraph","technology","Liveuamap","Reddit","conspiracies","business", "entertainment", "general", "health", "science", "sports"],
             sources:[],
             isLoading:false
         }
@@ -51,8 +51,11 @@ module.exports={
             this.sources=[];
 
             switch(this.sourceCategores[value.value]){
-                case "All Sources":
-                this.allSources();
+                case "yahoo":
+                this.grabApiOrgNewsSouces("yahoo");
+                break;
+                case "Telegraph":
+                this.grabApiOrgNewsSouces("telegraph");
                 break;
                 case "business":
                 this.grabApiOrgNewsSouces("business");
@@ -92,12 +95,36 @@ module.exports={
         },
         allSources(){
             //load all sources
-            this.grabApiOrgNewsSouces("everything");
+            this.grabApiOrgNewsSouces("yahoo");
+            this.currentSouceSelected="yahoo";
            
         },
         souceClicked(e){
             var home=this;
             //this.$emit("loadProcess","loading");
+
+            if(this.currentSouceSelected=="yahoo"){
+                let tag= e.item;
+                  this.$modal.close({
+                      source:tag,
+                      filer:false,
+                      type:"yahoo"
+                  });
+                return;
+            }
+
+            if(this.currentSouceSelected=="Telegraph"){
+                //handle this source slightly differetly
+                let tag= e.item;
+                //tag
+                  this.$modal.close({
+                      source:tag,
+                      filer:false,
+                      type:"telegraph"
+                  });
+
+                return;
+            }
 
 
             if(this.currentSouceSelected=="Liveuamap"){

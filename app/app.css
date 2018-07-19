@@ -123,3 +123,11 @@ ListPicker{
  .errorMessage{
      padding:20px;
  }
+
+ .not_connected_text{
+     padding:10px;
+     color:white;
+     text-align: center;
+     font-family: 'Roboto', sans-serif;
+    font-size: 20px;
+ }

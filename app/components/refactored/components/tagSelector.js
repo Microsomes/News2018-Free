@@ -10,7 +10,8 @@ module.exports={
                 "Trending",
                 "Twinkies",
                 "Add Tag"
-            ]
+            ],
+            
         }
     },
     methods:{

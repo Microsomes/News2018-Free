@@ -18,6 +18,45 @@ module.exports={
         }
     },
     methods:{
+        loadtelegraph(tag){
+            this.$emit("showLoadingState","loading...")
+            //load yahoo news
+            this.state.source="telegraph";
+            this.state.tag=tag;
+            var savedState= applicationSettings.setString("lastSource","telegraph");
+            var lasedTag= applicationSettings.setString("lastTag",tag);
+            var url="http://"+SERVER_IP+"/crawler/telegraph/"+tag;
+            var home=this;
+
+            httpModule.getJSON(url).then((r) => {
+               
+                this.$emit("parse_article_telegraph",r);
+
+
+
+            },(e)=>{
+                 console.log(e);
+            });
+        },
+        loadYahoo(tag){
+            this.$emit("showLoadingState","loading...")
+            //load yahoo news
+            this.state.source="yahoo";
+            this.state.tag=tag;
+            var savedState= applicationSettings.setString("lastSource","yahoo");
+            var lasedTag= applicationSettings.setString("lastTag",tag);
+            var url="http://"+SERVER_IP+"/crawler/yahoo/"+tag;
+            var home=this;
+
+            httpModule.getJSON(url).then((r) => {
+               
+                this.$emit("parse_article_yahoo",r);
+
+
+            },(e)=>{
+                 console.log(e);
+            });
+        },
         loadRedditData(tag){
             this.state.source="reddit";
             //set the last source
@@ -61,14 +100,19 @@ module.exports={
             console.log("refreshing news");
         },
         changeTitle(title){
-            // var title= title;
+             var title= title;
 
-            //  var str = title.replace(/\s+/g, ' ').toUpperCase();
-            //  this.title="Newsify "+str;
+              var str = title.replace(/\s+/g, ' ').toUpperCase();
+              this.title="Newsify "+str;
         },
 
         refreshNewsSource(){
             this.$emit("show_article_is_loading","loading");
+             if(this.state.source=="telegraph"){
+                //handle the refresh of this source slightly differntly
+                this.loadtelegraph(this.state.tag);
+                return;
+            }
             if(this.state.source=="reddit"){
                 //handle the refresh of this source slightly differntly
                 this.loadRedditData(this.state.tag);
@@ -79,6 +123,12 @@ module.exports={
                 this.loadLiveUamapData(this.state.tag);
                 return;
             }
+            if(this.state.source=="yahoo"){
+                //handle the refresh of this source slightly differently
+                this.loadYahoo(this.state.tag);
+                return;
+            }
+            
         //method that refreshes news
          this.loadApiOrgArticle_tag(this.state.tag);
         },
@@ -109,7 +159,13 @@ module.exports={
                 }else if(data.type=="reddit"){
                     console.log("load reddit related data");
                     this.loadRedditData(data.source);
-                }     
+                }else if(data.type=="telegraph"){
+                    console.log("loading telegraph related news");
+                    this.loadtelegraph(data.source);
+                }else if(data.type="yahoo"){
+                    console.log("loading yahoo related news");
+                    this.loadYahoo(data.source);
+                }
             
             });
 
@@ -217,6 +273,8 @@ module.exports={
         }else{
             if(savedState=="reddit"){
                 //handle reddit reloads differently
+                this.$emit("filter_change","off");
+
                 var lasedTag= applicationSettings.getString("lastTag");
                 if(lasedTag==undefined || lasedTag==null){
                     home.loadRedditData("FORTnITE");
@@ -227,6 +285,8 @@ module.exports={
             }
             if(savedState=="liveuamap"){
                 //handle reddit reloads differently
+                this.$emit("filter_change","off");
+
                 var lasedTag= applicationSettings.getString("lastTag");
                 if(lasedTag==undefined || lasedTag==null){
                     home.loadLiveUamapData("us");
@@ -236,6 +296,31 @@ module.exports={
                 return;
             }
 
+             if(savedState=="telegraph"){
+                //handle yahoo reloads differently
+                this.$emit("filter_change","off");
+
+                var lasedTag= applicationSettings.getString("lastTag");
+                if(lasedTag==undefined || lasedTag==null){
+                    home.loadtelegraph("headlines");
+                }else{
+                    home.loadtelegraph(lasedTag);
+                }
+                return;
+            }
+            if(savedState=="yahoo"){
+                //handle yahoo reloads differently
+                this.$emit("filter_change","off");
+
+                var lasedTag= applicationSettings.getString("lastTag");
+                if(lasedTag==undefined || lasedTag==null){
+                    home.loadYahoo("headlines");
+                }else{
+                    home.loadYahoo(lasedTag);
+                }
+                return;
+            }
+            
              
             this.loadApiOrgArticle_default(savedState);
         }

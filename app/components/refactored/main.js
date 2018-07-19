@@ -11,6 +11,9 @@ var nstoasts = require("nativescript-toasts");
 const articleReader= require("./../articleReader");
 const application = require("tns-core-modules/application");
 
+const not_connected_page= require("./pages/notConnected");
+ 
+
 const exit = require('nativescript-exit').exit;
 
 
@@ -33,7 +36,89 @@ module.exports={
         }
     },
     methods:{
+        showLoadingState(){
+            this.articles=[];
+            this.isLoading=true;
+            this.feedback="loading... and scraping this could take a while";
+            this.showFeedback=true;
+
+        },
+       async  parse_article_telegraph(data){
+            this.isLoading=true;
+            this.showFeedback=true;
+            this.articles=[];
+            this.feedback="loading data from telegraph.com and parsing it. This may take a few seconds";
+            await sleep(1000);
+            console.log("parsing now");
+            this.showFeedback=false;
+            this.isLoading=false;
+            this.articles=[];
+
+
+            console.log(data);
+            this.$refs.header_comp.changeTitle("-Yahoo");
+            var home=this;
+            var articles= data["articles"];
+            var tots= data["totalResults"];
+            
+            for(var i=0;i<tots;i++){
+                var curArticle= articles[i];
+                var curTitle= curArticle["title"];
+                var curAuthor= curArticle["author"];
+                var curPublishedAt= curArticle["publishedAt"];
+                var tt= Moments(curPublishedAt).fromNow();
+                var curUrl= curArticle["link"];
+                var urlToImg= curArticle["urlToImage"];
+                home.articles.push({
+                   image:urlToImg,
+                   title:curTitle,
+                   source:curAuthor,
+                   tt:tt,
+                   url:curUrl
+               })
+           }
+
+
+        },
+        async parse_article_yahoo(data){
+            this.isLoading=true;
+            this.showFeedback=true;
+            this.articles=[];
+            this.feedback="loading data from yahoo.com and parsing it. This may take a few seconds";
+            await sleep(1000);
+            console.log("parsing now");
+            this.showFeedback=false;
+            this.isLoading=false;
+            this.articles=[];
+
+
+            console.log(data);
+            this.$refs.header_comp.changeTitle("-Yahoo");
+            var home=this;
+            var articles= data["articles"];
+            var tots= data["totalResults"];
+            
+            for(var i=0;i<tots;i++){
+                var curArticle= articles[i];
+                var curTitle= curArticle["title"];
+                var curAuthor= curArticle["author"];
+                var curPublishedAt= curArticle["publishedAt"];
+                //var tt= Moments(curPublishedAt).fromNow();
+                var curUrl= curArticle["url"];
+                var urlToImg= curArticle["urlToImage"];
+                home.articles.push({
+                   image:urlToImg,
+                   title:curTitle,
+                   source:"Yahoo",
+                   tt:curPublishedAt,
+                   url:curUrl
+               })
+           }
+
+
+        },
         async parse_article_reddit(data){
+            this.$refs.header_comp.changeTitle("-reddit");
             this.isLoading=true;
             this.showFeedback=true;
             this.articles=[];
@@ -109,6 +194,8 @@ module.exports={
             }
         },
         async articlesLoad_live(data){
+            this.$refs.header_comp.changeTitle("-maeplet");
+
             this.isLoading=true;
             this.showFeedback=true;
             this.articles=[];
@@ -222,13 +309,24 @@ module.exports={
             }
         });
  
+    },
+    created(){
+        httpModule.getString("https://httpbin.org/get").then((r) => {
+            console.log("connected");
+         }, (e) => {
+             //user is not connected to the internet
+            console.log("not connected to the internet");
+            this.$navigateTo(not_connected_page);
+
+        });
+
     }
     ,
     template:
     `
     <Page ref="myPage" class="page">  
     
-    <header @parse_article_reddit="parse_article_reddit" ref="header_comp" @articlesLoad_live="articlesLoad_live" @filter_change="filter_change"  @show_article_is_loading="show_loading_article" @articles_error="show_no_data" @articlesLoad="articlesLoad"></header>
+    <header @parse_article_telegraph="parse_article_telegraph" @showLoadingState="showLoadingState" @parse_article_yahoo="parse_article_yahoo" @parse_article_reddit="parse_article_reddit" ref="header_comp" @articlesLoad_live="articlesLoad_live" @filter_change="filter_change"  @show_article_is_loading="show_loading_article" @articles_error="show_no_data" @articlesLoad="articlesLoad"></header>
  
     <StackLayout>
 
@@ -236,7 +334,7 @@ module.exports={
 
     <ActivityIndicator color="#CE4947" v-if="isLoading" :busy="isLoading" />
 
-    <Label class="errorMessage"  v-show="showFeedback"  :text="feedback"></Label>
+    <Label textWrap="true" class="errorMessage"  v-show="showFeedback"  :text="feedback"></Label>
     
     <ScrollView   ref="main_scroll"  id="myScroller">
     <ListView  @itemTap="openNews" ref="main_list_view"   height="100%" for="n in articles"     >
