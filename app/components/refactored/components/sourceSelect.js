@@ -200,7 +200,14 @@ module.exports={
                 this.grabApiOrgNewsSouces("liveuamap");
                 home.currentSouceSelected="Liveuamap";
 
-            }else{
+            }else if(savedState=="Reddit"){
+                this.grabApiOrgNewsSouces("reddit");
+                home.currentSouceSelected="Reddit";
+            }else if(savedState=="Telegraph"){
+                this.grabApiOrgNewsSouces("telegraph");
+                home.currentSouceSelected="Telegraph";
+            }
+            else{
             this.grabApiOrgNewsSouces(savedState);
             home.currentSouceSelected=savedState;
             }

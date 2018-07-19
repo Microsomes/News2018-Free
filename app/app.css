@@ -131,3 +131,12 @@ ListPicker{
      font-family: 'Roboto', sans-serif;
     font-size: 20px;
  }
+ .verti{
+     vertical-align: center;
+     padding: 50px;
+ }
+ .openSor{
+     font-size:20px;
+     font-family: 'Roboto', sans-serif;
+
+ }

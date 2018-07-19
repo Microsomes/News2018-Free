@@ -36,6 +36,9 @@ module.exports={
         }
     },
     methods:{
+        openSourceF(){
+            this.$refs.header_comp.openSources();
+        },
         async  showLoadingState(){
             
         var options = {
@@ -101,7 +104,7 @@ module.exports={
 
 
             console.log(data);
-            this.$refs.header_comp.changeTitle("-Yahoo");
+            this.$refs.header_comp.changeTitle("-Telegraph");
             var home=this;
             var articles= data["articles"];
             var tots= data["totalResults"];
@@ -382,7 +385,7 @@ module.exports={
     <Label textWrap="true" class="errorMessage"  v-show="showFeedback"  :text="feedback"></Label>
     
     <ScrollView   ref="main_scroll"  id="myScroller">
-    <ListView  @itemTap="openNews" ref="main_list_view"   height="100%" for="n in articles"     >
+    <ListView  @itemTap="openNews" ref="main_list_view"   height="90%" for="n in articles"     >
       <v-template>
          <StackLayout>
             <StackLayout class="newsItemImage">
@@ -398,8 +401,9 @@ module.exports={
         </StackLayout>
       </v-template>
     </ListView>
-    </ScrollView>
- 
+     </ScrollView>
+     <Button class="openSor" @tap="openSourceF" textWrap="true" background="white" color="black" height="10%" text="Select Another Source"></Button>
+
       
     </StackLayout>
     

@@ -38,7 +38,9 @@ module.exports={
             });
         },
         loadtelegraph(tag){
-            this.$emit("showLoadingState","loading...")
+            this.$emit("showLoadingState","loading...");
+            this.changeTitle("Telegraph");
+
             //load yahoo news
             this.state.source="telegraph";
             this.state.tag=tag;
@@ -365,14 +367,14 @@ module.exports={
         this.$on('test', function (msg) {
             console.log(msg)
         })
+        // <ActionItetem @tap="refreshNewsSource" android.systemIcon="ic_menu_refresh" android.position="actionBar" text="Sources"></ActionItetem>
+
     }
     ,
     template:
     `    
-    <ActionBar flat="true" :title="title">
-    <ActionItem @tap="openSources" text="Sources"></ActionItem>
-    <ActionItem @tap="refreshNewsSource" android.systemIcon="ic_menu_refresh" android.position="actionBar" text="Sources"></ActionItem>
-     </ActionBar>
+    <ActionBar height="250px" background="#CF4B4B" color="white" flat="true" :title="title">
+      </ActionBar>
  
 
     `
