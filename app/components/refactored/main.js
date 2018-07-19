@@ -36,12 +36,21 @@ module.exports={
         }
     },
     methods:{
-        showLoadingState(){
+        async  showLoadingState(){
+            
+        var options = {
+            text: "loading the news this could take a while",
+            duration : nstoasts.DURATION.LONG,
+            position : nstoasts.POSITION.BOTTOM //optional
+        }
+        nstoasts.show(options);
+            
+            // this.articles=[];
+            // this.isLoading=true;
+            // this.feedback="";
+            // this.showFeedback=true;
+            sleep(500);
             this.articles=[];
-            this.isLoading=true;
-            this.feedback="loading... and scraping this could take a while";
-            this.showFeedback=true;
-
         },
        async  parse_article_telegraph(data){
             this.isLoading=true;

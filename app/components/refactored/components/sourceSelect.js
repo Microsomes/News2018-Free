@@ -162,7 +162,7 @@ module.exports={
             var str = e.item;
             var fixed = str.replace(/\s+/g, '-').toLowerCase();
             console.log(fixed); // "sonic-free-games";
-
+            console.log("standard source selected");
             this.$modal.close({
                 source:fixed,
                 filer:true,
