@@ -117,7 +117,7 @@ module.exports={
                 home.articles.push({
                    image:urlToImg,
                    title:curTitle,
-                   source:curAuthor,
+                   source:"Telegraph",
                    tt:tt,
                    url:curUrl
                })

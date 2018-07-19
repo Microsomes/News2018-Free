@@ -1,5 +1,7 @@
 const httpModule = require("http");
 const SERVER_IP="192.168.0.54";
+const applicationSettings = require("application-settings");
+
 
 
 module.exports={
@@ -49,6 +51,9 @@ module.exports={
             console.log(this.sourceCategores[value.value]);
             this.currentSouceSelected=this.sourceCategores[value.value];
             this.sources=[];
+
+            applicationSettings.setString("lastSelectedSource",this.currentSouceSelected);
+            //lastSelectedSource
 
             switch(this.sourceCategores[value.value]){
                 case "yahoo":
@@ -181,12 +186,31 @@ module.exports={
         }
     },
     created(){
-        //loading all souces
-        console.log("all");
         var home=this;
-        setTimeout(()=>{
+        var savedState= applicationSettings.getString("lastSelectedSource");
+        if(savedState!=null && savedState!=undefined){
+            console.log("last----");
+            console.log(savedState);
+            if(savedState=="All Sources"){
+                return;
+            }
+            home.sourceCategores.unshift(savedState);
+
+            if(savedState=="Liveuamap"){
+                this.grabApiOrgNewsSouces("liveuamap");
+                home.currentSouceSelected="Liveuamap";
+
+            }else{
+            this.grabApiOrgNewsSouces(savedState);
+            home.currentSouceSelected=savedState;
+            }
+            console.log("adding to source categories");
+        }else{
             this.allSources();
-        },1000)
+
+        }
+         
+       
          
      }
     ,
